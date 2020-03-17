@@ -20,12 +20,6 @@ CORS(app)
 
 ## ROUTES
 
-# For testing API 
-@app.route('/')
-def test():
-    return 'Hello World'
-
-
 '''
 @TODO implement endpoint
     GET /drinks
@@ -88,7 +82,7 @@ def create_drink(payload):
 
     return jsonify({
         'succes': True,
-        'drinks': drink.long()
+        'drinks': [drink.long()]
     })
 
 '''
@@ -102,6 +96,32 @@ def create_drink(payload):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks/<int:drink_id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
+def update_drink(payload, drink_id):
+    if not drink_id:
+        abort(404)
+
+    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+
+    body = request.get_json()
+
+    title_updated = body.get('title', None)
+    recipe_updated_dict = body.get('recipe', None)
+
+    if title_updated:
+        drink.title = title_updated
+    
+    if recipe_updated_dict:
+        drink.recipe = json.dumps(recipe_updated_dict)
+
+    drink.update()
+
+    return jsonify({
+        'success': True,
+        'drinks': [drink.long()]
+    })
+    
 
 
 '''
@@ -114,7 +134,6 @@ def create_drink(payload):
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
-
 
 ## Error Handling
 '''
