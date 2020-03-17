@@ -54,6 +54,17 @@ def retrieve_drinks():
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks-detail')
+@requires_auth('get:drinks-detail')
+def retrieve_drinks_detail(payload):
+    drinks = Drink.query.order_by(Drink.id).all()
+
+    drinks_formatted = [drink.long() for drink in drinks]
+
+    return jsonify({
+        'success': True,
+        'drinks': drinks_formatted
+    })
 
 
 '''
@@ -65,6 +76,8 @@ def retrieve_drinks():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
+
+
 
 
 '''
