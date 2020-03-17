@@ -207,4 +207,4 @@ def auth_error(AuthError):
         'success': False,
         'error': AuthError.status_code,
         'message': AuthError.error
-    }), AuthError.status_code
+    }), 401
