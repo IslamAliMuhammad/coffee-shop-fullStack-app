@@ -76,9 +76,20 @@ def retrieve_drinks_detail(payload):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def create_drink(payload):
+    body = request.get_json()
+    new_title = body['title']
+    new_recipe_dict = body['recipe']
 
+    drink = Drink(title=new_title, recipe=json.dumps(new_recipe_dict))
+    drink.insert()
 
-
+    return jsonify({
+        'succes': True,
+        'drinks': drink.long()
+    })
 
 '''
 @TODO implement endpoint
