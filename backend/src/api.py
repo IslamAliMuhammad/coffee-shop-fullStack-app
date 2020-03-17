@@ -18,7 +18,7 @@ CORS(app)
 '''
 # db_drop_and_create_all()
 
-## ROUTES
+# ROUTES
 
 '''
 @DONE implement endpoint
@@ -31,7 +31,7 @@ CORS(app)
 @app.route('/drinks')
 def retrieve_drinks():
     drinks = Drink.query.order_by(Drink.id).all()
-        
+
     drinks_formatted = [drink.short() for drink in drinks]
 
     return jsonify({
@@ -39,7 +39,7 @@ def retrieve_drinks():
         'drinks': drinks_formatted
     })
 
-    
+
 '''
 @DONE implement endpoint
     GET /drinks-detail
@@ -85,6 +85,7 @@ def create_drink(payload):
         'drinks': [drink.long()]
     })
 
+
 '''
 @DONE implement endpoint
     PATCH /drinks/<id>
@@ -111,7 +112,7 @@ def update_drink(payload, drink_id):
 
     if title_updated:
         drink.title = title_updated
-    
+
     if recipe_updated_dict:
         drink.recipe = json.dumps(recipe_updated_dict)
 
@@ -121,7 +122,6 @@ def update_drink(payload, drink_id):
         'success': True,
         'drinks': [drink.long()]
     })
-    
 
 
 '''
@@ -134,33 +134,36 @@ def update_drink(payload, drink_id):
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
-@app.route('/delete/<int:drink_id>', methods=['DELETE'])
+@app.route('/drinks/<int:drink_id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
 def delete_drink(payload, drink_id):
     if not drink_id:
         abort(404)
-    
+
     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
     if drink:
         drink.delete()
     else:
         abort(404)
-    
+
     return jsonify({
         'success': True,
         'delete': drink_id
     })
-## Error Handling
+
+
+# Error Handling
 '''
 Example error handling for unprocessable entity
 '''
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
-                    "success": False, 
-                    "error": 422,
-                    "message": "unprocessable"
-                    }), 422
+        "success": False,
+        "error": 422,
+        "message": "unprocessable"
+    }), 422
+
 
 '''
 @DONE implement error handlers using the @app.errorhandler(error) decorator
@@ -175,10 +178,11 @@ def unprocessable(error):
 @app.errorhandler(405)
 def unprocessable(error):
     return jsonify({
-                    "success": False, 
-                    "error": 405,
-                    "message": "method not allowed"
-                    }), 405
+        "success": False,
+        "error": 405,
+        "message": "method not allowed"
+    }), 405
+
 
 '''
 @DONE implement error handler for 404
@@ -187,10 +191,11 @@ def unprocessable(error):
 @app.errorhandler(404)
 def unprocessable(error):
     return jsonify({
-                    "success": False, 
-                    "error": 404,
-                    "message": "resource not found"
-                    }), 404
+        "success": False,
+        "error": 404,
+        "message": "resource not found"
+    }), 404
+
 
 '''
 @DONE implement error handler for AuthError
