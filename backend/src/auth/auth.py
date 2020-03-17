@@ -1,5 +1,5 @@
 import json
-from flask import request, _request_ctx_stack, abort
+from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
@@ -35,11 +35,10 @@ def get_token_auth_header():
     """
     auth = request.headers.get('Authorization', None)
     if not auth:
-        # raise AuthError({
-        #     'code': 'authorization_header_missing',
-        #     'description': 'Authorization header is expected.'
-        # }, 401)
-        abort(401)
+        raise AuthError({
+            'code': 'authorization_header_missing',
+            'description': 'Authorization header is expected.'
+        }, 401)
 
 
     parts = auth.split()
@@ -150,7 +149,7 @@ def check_permissions(permission, payload):
                         }, 400)
 
     if permission not in payload['permissions']:
-        abort(401)
+        
         raise AuthError({
             'code': 'unauthorized',
             'description': 'Permission not found.'
